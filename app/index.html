@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>plans</title>
+<script src="marked.min.js"></script>
+<script src="highlight.min.js"></script>
+<script src="mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --fg: #d4d4d4;
+    --fg-strong: #f2f2f2;
+    --fg-dim: #7a7a7a;
+    --fg-mute: #5a5a5a;
+    --card: #131313;
+    --border: #262626;
+    --sans: -apple-system, "Inter", system-ui, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, "JetBrains Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+  }
+
+  nav {
+    padding: 80px 24px 40px 52px;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--fg-dim);
+    overflow-y: auto;
+    user-select: none;
+  }
+  nav .root { color: var(--fg-mute); margin-bottom: 10px; }
+  nav .item { display: flex; gap: 0; cursor: pointer; white-space: nowrap; }
+  nav .item:hover { color: var(--fg); }
+  nav .item.active { color: var(--fg-strong); }
+  nav .item .num { color: var(--fg-mute); margin-right: 0.6ch; }
+  nav .item.active .num { color: var(--fg-dim); }
+  nav .children {
+    margin-left: 1.1ch;
+    padding-left: 2.3ch;
+    border-left: 1px solid var(--border);
+  }
+
+  main { overflow-y: auto; padding: 72px 64px 120px 48px; }
+  article { max-width: 660px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    margin-bottom: 14px;
+  }
+  .eyebrow .sep { margin: 0 0.6ch; }
+  article h1 {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--fg-strong);
+    margin: 0 0 22px;
+  }
+  article h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.015em; color: var(--fg-strong); margin: 48px 0 16px; }
+  article h3 { font-size: 17px; font-weight: 600; color: var(--fg-strong); margin: 40px 0 12px; }
+  article h4 { font-size: 15px; font-weight: 600; color: var(--fg-strong); margin: 28px 0 8px; }
+  article p { margin: 0 0 18px; }
+  article strong { color: var(--fg-strong); font-weight: 600; }
+  article a { color: var(--fg-strong); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--fg-mute); }
+  article ul, article ol { padding-left: 22px; margin: 0 0 18px; }
+  article li { margin: 6px 0; padding-left: 2px; }
+  article li::marker { color: var(--fg-mute); }
+  article code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    background: #1c1c1c;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  article pre {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 22px;
+    margin: 0 0 24px;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  article pre code { background: none; padding: 0; font-size: inherit; }
+  article pre.mermaid { text-align: center; }
+
+  /* highlight.js — muted so code reads as prose, not a Christmas tree */
+  .hljs-comment, .hljs-quote, .hljs-meta { color: var(--fg-dim); }
+  .hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-type { color: #a9bfd8; }
+  .hljs-string, .hljs-regexp, .hljs-addition { color: #a8c7a0; }
+  .hljs-number, .hljs-literal, .hljs-symbol, .hljs-deletion { color: #d3b585; }
+  .hljs-title, .hljs-function .hljs-title, .hljs-section, .hljs-name { color: var(--fg-strong); }
+  .hljs-attr, .hljs-attribute, .hljs-property, .hljs-variable, .hljs-params { color: #c9c9c9; }
+  .hljs-punctuation, .hljs-operator { color: var(--fg); }
+  .hljs-emphasis { font-style: italic; }
+  .hljs-strong { font-weight: 600; }
+  article blockquote {
+    margin: 0 0 24px;
+    padding: 18px 24px;
+    background: var(--card);
+    border-left: 2px solid var(--fg-strong);
+    border-radius: 0 6px 6px 0;
+    color: var(--fg-strong);
+  }
+  article blockquote p { margin: 0; }
+  article hr { border: 0; border-top: 1px solid var(--border); margin: 40px 0; }
+  article table { border-collapse: collapse; margin: 0 0 24px; font-size: 15px; }
+  article th, article td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+  article th { color: var(--fg-strong); font-weight: 600; }
+  article img { max-width: 100%; border-radius: 6px; }
+  .empty { color: var(--fg-mute); font-family: var(--mono); font-size: 14px; }
+</style>
+</head>
+<body>
+<nav id="nav" data-tauri-drag-region></nav>
+<main id="main" data-tauri-drag-region><article id="article"><p class="empty">loading…</p></article></main>
+<script>
+  const nav = document.getElementById("nav");
+  const main = document.getElementById("main");
+  const article = document.getElementById("article");
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  const LANG_ALIAS = { jsonc: "json", toml: "ini", sh: "bash", zsh: "bash" };
+  const renderer = {
+    code({ text, lang }) {
+      if (lang === "mermaid") return `<pre class="mermaid">${esc(text)}</pre>`;
+      const language = LANG_ALIAS[lang] ?? lang;
+      const html = language && hljs.getLanguage(language)
+        ? hljs.highlight(text, { language }).value
+        : text.split("\n").map((l) =>
+            /^\s*(\/\/|#\s|--\s)/.test(l) ? `<span class="hljs-comment">${esc(l)}</span>` : esc(l))
+          .join("\n");
+      return `<pre><code>${html}</code></pre>`;
+    },
+  };
+  marked.use({ renderer, gfm: true });
+  // Diagrams keep their natural size and scroll inside the card, like wide code.
+  const natural = { useMaxWidth: false };
+  mermaid.initialize({
+    startOnLoad: false,
+    flowchart: natural, sequence: natural, class: natural, state: natural, er: natural, gantt: natural,
+    theme: "base",
+    themeVariables: {
+      darkMode: true,
+      background: "#131313",
+      primaryColor: "#1c1c1c",
+      primaryTextColor: "#e6e6e6",
+      primaryBorderColor: "#3a3a3a",
+      secondaryColor: "#181818",
+      tertiaryColor: "#111111",
+      lineColor: "#8a8a8a",
+      edgeLabelBackground: "#131313",
+      fontFamily: "-apple-system, Inter, system-ui, sans-serif",
+      fontSize: "14px",
+    },
+  });
+
+  // In the Tauri app the Rust commands replace the Node server; `root` is the open folder.
+  const tauri = window.__TAURI__;
+  let root = null;
+  const api = tauri
+    ? {
+        tree: () => tauri.core.invoke("tree", { root }),
+        doc: (path) => tauri.core.invoke("doc", { root, path }),
+      }
+    : {
+        tree: () => fetch("/api/tree").then((r) => (r.ok ? r.json() : Promise.reject(r.status))),
+        doc: (path) => fetch(`/api/doc?path=${encodeURIComponent(path)}`)
+          .then((r) => (r.ok ? r.json() : Promise.reject(r.status))),
+      };
+
+  let tree = [];
+  let current = decodeURIComponent(location.hash.slice(1));
+  let lastTree = "";
+  let lastDoc = "";
+
+  const files = (nodes) => nodes.flatMap((n) => (n.kind === "dir" ? files(n.children) : [n.path]));
+
+  // Numbers only decorate top-level entries; nested children read as plain names.
+  function navItem(n, depth = 0) {
+    const num = depth === 0 && n.number ? `<span class="num">${n.number}.</span>` : "";
+    if (n.kind === "dir") {
+      const first = files(n.children)[0];
+      return `<div class="item dir" data-path="${esc(first)}">${num}<span>${esc(n.title)}</span></div>` +
+        `<div class="children">${n.children.map((c) => navItem(c, depth + 1)).join("")}</div>`;
+    }
+    const cls = n.path === current ? "item active" : "item";
+    return `<div class="${cls}" data-path="${esc(n.path)}">${num}<span>${esc(n.title)}</span></div>`;
+  }
+
+  function renderNav(root) {
+    nav.innerHTML = `<div class="root">${esc(root)}</div>` + tree.map((n) => navItem(n)).join("");
+  }
+
+  function renderDoc(doc) {
+    const parts = [esc(doc.path.replace(/\.md$/i, ""))];
+    if (doc.fm.status) parts.push(esc(doc.fm.status));
+    for (const [k, v] of Object.entries(doc.fm)) {
+      if (!["status", "title", "label"].includes(k)) parts.push(`${esc(k)} ${esc(v)}`);
+    }
+    article.innerHTML =
+      `<div class="eyebrow">${parts.join('<span class="sep">·</span>')}</div>` +
+      `<h1>${esc(doc.title)}</h1>` + marked.parse(doc.body);
+    const diagrams = article.querySelectorAll("pre.mermaid");
+    if (diagrams.length) mermaid.run({ nodes: diagrams }).catch((err) => console.error(err));
+  }
+
+  async function load(path) {
+    if (!path) return;
+    let doc;
+    try { doc = await api.doc(path); }
+    catch (err) { article.innerHTML = `<p class="empty">${esc(path)}: ${esc(String(err))}</p>`; return; }
+    const key = `${doc.path}@${doc.mtime}`;
+    if (key === lastDoc) return;
+    const switching = !lastDoc.startsWith(`${doc.path}@`);
+    lastDoc = key;
+    const top = main.scrollTop;
+    renderDoc(doc);
+    main.scrollTop = switching ? 0 : top;
+  }
+
+  function select(path) {
+    if (path === current) return;
+    current = path;
+    history.replaceState(null, "", `#${encodeURIComponent(path)}`);
+    for (const el of nav.querySelectorAll(".item[data-path]:not(.dir)")) {
+      el.classList.toggle("active", el.dataset.path === path);
+    }
+    load(path);
+  }
+
+  async function sync() {
+    if (tauri && !root) {
+      nav.innerHTML = "";
+      article.innerHTML = `<p class="empty">drop a folder here, or press ⌘O</p>`;
+      return;
+    }
+    let data;
+    try { data = await api.tree(); }
+    catch (err) { article.innerHTML = `<p class="empty">${esc(String(err))}</p>`; return; }
+    const key = JSON.stringify(data);
+    if (key !== lastTree) {
+      lastTree = key;
+      tree = data.tree;
+      document.title = data.root;
+      const all = files(tree);
+      if (!all.includes(current)) current = all[0] ?? "";
+      renderNav(data.root);
+      if (!current) article.innerHTML = `<p class="empty">no .md files in ${esc(data.root)}</p>`;
+    }
+    await load(current);
+  }
+
+  nav.addEventListener("click", (e) => {
+    const el = e.target.closest(".item[data-path]");
+    if (el) select(el.dataset.path);
+  });
+  const ZOOM = { "=": 0.1, "+": 0.1, "-": -0.1, "_": -0.1, "0": null };
+  function setZoom(level) {
+    document.body.style.zoom = level;
+    try { localStorage.setItem("zoom", level); } catch {}
+  }
+  function zoomBy(delta) {
+    const now = Number(document.body.style.zoom) || 1;
+    setZoom(delta === null ? 1 : Math.min(2, Math.max(0.5, Math.round((now + delta) * 10) / 10)));
+  }
+  try { setZoom(Number(localStorage.getItem("zoom")) || 1); } catch {}
+
+  document.addEventListener("keydown", (e) => {
+    if (e.metaKey && e.key in ZOOM) { e.preventDefault(); zoomBy(ZOOM[e.key]); return; }
+    if (tauri && e.metaKey && e.key === "o") { e.preventDefault(); pickFolder(); return; }
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const step = { ArrowDown: 1, j: 1, ArrowUp: -1, k: -1 }[e.key];
+    if (!step) return;
+    const all = files(tree);
+    const next = all[all.indexOf(current) + step];
+    if (next) { e.preventDefault(); select(next); }
+  });
+
+  function setRoot(dir) {
+    root = dir.endsWith(".md") ? dir.slice(0, dir.lastIndexOf("/")) : dir;
+    try { localStorage.setItem("root", root); } catch {}
+    current = "";
+    lastTree = "";
+    lastDoc = "";
+    sync();
+  }
+
+  async function pickFolder() {
+    const picked = await tauri.dialog.open({ directory: true, defaultPath: root ?? undefined });
+    if (picked) setRoot(picked);
+  }
+
+  async function boot() {
+    if (tauri) {
+      tauri.event.listen("tauri://drag-drop", (e) => {
+        const dropped = e.payload.paths?.[0];
+        if (dropped) setRoot(dropped);
+      });
+      let saved = null;
+      try { saved = localStorage.getItem("root"); } catch {}
+      root = (await tauri.core.invoke("initial_root")) ?? saved;
+    }
+    sync();
+    setInterval(sync, 1500);
+  }
+  boot();
+</script>
+</body>
+</html>
